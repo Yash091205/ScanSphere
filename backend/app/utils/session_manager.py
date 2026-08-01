@@ -181,3 +181,64 @@ class SessionManager:
         new_path = self.session_path / f"page_{page_number}{extension}"
 
         new_path.write_bytes(contents)
+
+    def append_pages(self, files: list[tuple[bytes, str]]):
+
+        pages = self.list_pages()
+
+        next_page = len(pages) + 1
+
+        for contents, extension in files:
+
+            new_path = self.session_path / f"page_{next_page}{extension}"
+
+            new_path.write_bytes(contents)
+
+            next_page += 1
+
+        self.update_total_pages()
+
+    def reorder_pages(self, page_order: list[int]):
+        """
+        Reorder pages according to the given page order.
+        Example:
+        [3,1,4,2]
+        """
+
+        pages = self.list_pages()
+
+        if len(page_order) != len(pages):
+            raise UploadException("Invalid page order.")
+
+        #
+        # Phase 1 - Rename to temporary names
+        #
+        for new_index, old_page in enumerate(page_order, start=1):
+
+            page = next(
+                p for p in pages
+                if p["page_number"] == old_page
+            )
+
+            old_path = self.session_path / page["stored_name"]
+
+            suffix = old_path.suffix
+
+            temp_path = self.session_path / f"temp_{new_index}{suffix}"
+
+            old_path.rename(temp_path)
+
+        #
+        # Phase 2 - Rename to final names
+        #
+        temp_files = sorted(
+            self.session_path.glob("temp_*")
+        )
+
+        for index, file in enumerate(temp_files, start=1):
+
+            new_name = f"page_{index}{file.suffix}"
+
+            file.rename(
+                self.session_path / new_name
+            )

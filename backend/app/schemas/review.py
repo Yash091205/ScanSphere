@@ -21,3 +21,6 @@ class ReviewResponse(BaseModel):
     total_pages: int
 
     pages: list[ReviewPage]
+
+class ReorderRequest(BaseModel):
+    page_order: list[int]

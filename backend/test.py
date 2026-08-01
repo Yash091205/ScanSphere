@@ -1,9 +1,13 @@
 from app.utils.session_manager import SessionManager
 
-session = input("Session ID: ")
+session_id = input("Session ID: ")
 
+manager = SessionManager(session_id)
 
-manager = SessionManager(session)
+print("\nBefore:")
+print(manager.list_pages())
 
-manager.update_total_pages()
-print(" successfully.")
+manager.reorder_pages([3, 1, 4, 2])
+
+print("\nAfter:")
+print(manager.list_pages())
