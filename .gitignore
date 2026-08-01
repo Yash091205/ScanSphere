@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+.venv/
+
+# Node
+node_modules/
+
+# Environment
+.env
+
+# Temporary Processing Files
+uploads/
+enhanced/
+outputs/
+
+# Build Files
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# Operating System
+.DS_Store
+Thumbs.db
