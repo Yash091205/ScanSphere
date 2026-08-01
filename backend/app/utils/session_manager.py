@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from app.core.config import UPLOAD_DIR
+from app.core.config import ENHANCED_DIR, UPLOAD_DIR
 from app.core.exceptions import UploadException
 
 
@@ -17,6 +17,17 @@ class SessionManager:
 
     def get_session_path(self) -> Path:
         return self.session_path
+
+    def get_enhanced_path(self) -> Path:
+
+        enhanced_path = ENHANCED_DIR / self.session_id
+
+        enhanced_path.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        return enhanced_path
 
     def get_metadata_path(self) -> Path:
         return self.metadata_path
