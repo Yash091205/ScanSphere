@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.api.v1.upload import router as upload_router
 from app.api.v1.health import router as health_router
+from app.api.v1.review import router as review_router
 from app.core.config import PROJECT_NAME, VERSION
 
 app = FastAPI(
@@ -18,4 +19,10 @@ app.include_router(
     upload_router,
     prefix="/api/v1",
     tags=["Upload"],
+)
+
+app.include_router(
+    review_router,
+    prefix="/api/v1",
+    tags=["Review"],
 )

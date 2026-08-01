@@ -14,7 +14,7 @@ from app.core.exceptions import UploadException
 from app.utils.file_manager import ensure_directory
 from app.schemas.upload import UploadedPage
 from app.pdf.pdf_converter import pdf_to_images
-
+from app.utils.session_manager import SessionManager
 
 class UploadService:
 
@@ -30,7 +30,9 @@ class UploadService:
 
         session_id = generate_session_id()
 
-        session_folder = UPLOAD_DIR / session_id
+        manager = SessionManager(session_id)
+
+        session_folder = manager.get_session_path()
 
         ensure_directory(session_folder)
 
@@ -68,6 +70,14 @@ class UploadService:
                 )
             )
 
+        manager = SessionManager(session_id)
+
+        manager.create_metadata(
+            original_file=files[0].filename if len(files) == 1 else "Multiple Images",
+            document_type="images",
+            total_pages=len(uploaded_pages),
+        )
+        
         return {
             "session_id": session_id,
             "pages": uploaded_pages,
@@ -118,6 +128,14 @@ class UploadService:
             )
 
         pdf_path.unlink(missing_ok=True)
+
+        manager = SessionManager(session_id)
+
+        manager.create_metadata(
+            original_file=pdf.filename,
+            document_type="pdf",
+            total_pages=len(uploaded_pages),
+        )
 
         return {
             "session_id": session_id,
