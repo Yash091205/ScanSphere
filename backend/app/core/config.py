@@ -5,7 +5,7 @@ from pathlib import Path
 # ---------------------------------------------------
 
 PROJECT_NAME = "ScanSphere"
-PROJECT_VERSION = "1.0.0"
+VERSION = "1.0.0"
 
 # ---------------------------------------------------
 # Base Directories

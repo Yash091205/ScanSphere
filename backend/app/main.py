@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from app.api.v1.upload import router as upload_router
 from app.api.v1.health import router as health_router
 from app.core.config import PROJECT_NAME, VERSION
 
@@ -12,4 +12,10 @@ app.include_router(
     health_router,
     prefix="/api/v1",
     tags=["Health"]
+)
+
+app.include_router(
+    upload_router,
+    prefix="/api/v1",
+    tags=["Upload"],
 )
