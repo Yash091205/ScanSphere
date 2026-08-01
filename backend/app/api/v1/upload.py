@@ -1,5 +1,6 @@
-from fastapi import APIRouter, File, UploadFile
 from typing import Annotated
+
+from fastapi import APIRouter, File, UploadFile
 
 from app.schemas.upload import UploadResponse
 from app.services.upload_service import UploadService
@@ -16,12 +17,12 @@ service = UploadService()
 async def upload_images(
     files: Annotated[list[UploadFile], File(...)]
 ):
-
-    pages = await service.upload_images(files)
+    result = await service.upload_images(files)
 
     return UploadResponse(
         message="Images uploaded successfully.",
-        pages=pages,
+        session_id=result["session_id"],
+        pages=result["pages"],
     )
 
 
@@ -32,10 +33,10 @@ async def upload_images(
 async def upload_pdf(
     file: UploadFile = File(...)
 ):
-
-    pages = await service.upload_pdf(file)
+    result = await service.upload_pdf(file)
 
     return UploadResponse(
         message="PDF uploaded successfully.",
-        pages=pages,
+        session_id=result["session_id"],
+        pages=result["pages"],
     )

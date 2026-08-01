@@ -1,6 +1,6 @@
 from uuid import uuid4
 from pathlib import Path
-
+from app.utils.session import generate_session_id
 from fastapi import UploadFile
 
 from app.core.config import (
@@ -28,6 +28,12 @@ class UploadService:
                 f"Maximum {MAX_PAGE_LIMIT} pages allowed."
             )
 
+        session_id = generate_session_id()
+
+        session_folder = UPLOAD_DIR / session_id
+
+        ensure_directory(session_folder)
+
         uploaded_pages = []
 
         for index, file in enumerate(files, start=1):
@@ -46,23 +52,26 @@ class UploadService:
                     f"{file.filename} exceeds {MAX_FILE_SIZE_MB} MB."
                 )
 
-            unique_name = f"{uuid4()}{extension}"
+            stored_name = f"page_{index}{extension}"
 
-            destination = UPLOAD_DIR / unique_name
+            destination = session_folder / stored_name
 
             destination.write_bytes(contents)
 
             uploaded_pages.append(
                 UploadedPage(
-                    id=Path(unique_name).stem,
+                    id=f"page_{index}",
                     original_name=file.filename,
-                    stored_name=unique_name,
+                    stored_name=stored_name,
                     page_number=index,
-                    preview_url=f"/temp/uploads/{unique_name}",
+                    preview_url=f"/temp/uploads/{session_id}/{stored_name}",
                 )
             )
 
-        return uploaded_pages
+        return {
+            "session_id": session_id,
+            "pages": uploaded_pages,
+        }
 
     async def upload_pdf(self, pdf: UploadFile):
 
@@ -76,13 +85,17 @@ class UploadService:
                 f"PDF exceeds {MAX_FILE_SIZE_MB} MB."
             )
 
-        pdf_name = f"{uuid4()}.pdf"
+        session_id = generate_session_id()
 
-        pdf_path = UPLOAD_DIR / pdf_name
+        session_folder = UPLOAD_DIR / session_id
+
+        ensure_directory(session_folder)
+
+        pdf_path = session_folder / "original.pdf"
 
         pdf_path.write_bytes(contents)
 
-        pages = pdf_to_images(pdf_path, UPLOAD_DIR)
+        pages = pdf_to_images(pdf_path, session_folder)
 
         if len(pages) > MAX_PAGE_LIMIT:
             pdf_path.unlink(missing_ok=True)
@@ -96,14 +109,17 @@ class UploadService:
 
             uploaded_pages.append(
                 UploadedPage(
-                    id=page.stem,
-                    original_name=f"Page {index}",
+                    id=f"page_{index}",
+                    original_name=f"{pdf.filename} (Page {index})",
                     stored_name=page.name,
                     page_number=index,
-                    preview_url=f"/temp/uploads/{page.name}",
+                    preview_url=f"/temp/uploads/{session_id}/{page.name}",
                 )
             )
 
         pdf_path.unlink(missing_ok=True)
 
-        return uploaded_pages
+        return {
+            "session_id": session_id,
+            "pages": uploaded_pages,
+        }

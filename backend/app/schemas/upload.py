@@ -13,4 +13,5 @@ class UploadedPage(BaseModel):
 class UploadResponse(BaseModel):
     success: bool = True
     message: str
+    session_id: str
     pages: List[UploadedPage]
