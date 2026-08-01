@@ -6,13 +6,13 @@ from app.core.exceptions import UploadException
 
 class ReviewService:
 
-    def get_session(self, session_id: str):
+    def get_session(self, session_id: str, source: str = "upload"):
 
         manager = SessionManager(session_id)
 
         metadata = manager.read_metadata()
 
-        pages = manager.list_pages()
+        pages = manager.list_pages(source)
 
         return {
             "session_id": session_id,

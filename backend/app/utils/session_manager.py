@@ -63,13 +63,19 @@ class SessionManager:
         with open(self.metadata_path, "w", encoding="utf-8") as file:
             json.dump(metadata, file, indent=4)
 
-    def list_pages(self) -> list[dict]:
+    def list_pages(self, source: str = "upload") -> list[dict]:
         """
-        Returns all uploaded pages in the correct order.
+        List pages from upload or enhanced folder.
         """
 
-        if not self.session_exists():
-            raise UploadException("Session does not exist.")
+        if source == "upload":
+            folder = self.session_path
+            preview_prefix = "/temp/uploads"
+        elif source == "enhanced":
+            folder = self.get_enhanced_path()
+            preview_prefix = "/temp/enhanced"
+        else:
+            raise UploadException("Invalid source.")
 
         image_extensions = {".png", ".jpg", ".jpeg", ".webp"}
 
@@ -77,7 +83,7 @@ class SessionManager:
 
         image_files = [
             file
-            for file in self.session_path.iterdir()
+            for file in folder.iterdir()
             if file.is_file() and file.suffix.lower() in image_extensions
         ]
 
@@ -91,7 +97,7 @@ class SessionManager:
                 {
                     "page_number": index,
                     "stored_name": file.name,
-                    "preview_url": f"/temp/uploads/{self.session_id}/{file.name}",
+                    "preview_url": f"{preview_prefix}/{self.session_id}/{file.name}",
                 }
             )
 

@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi import Query
 from app.schemas.review import ReorderRequest
 from app.schemas.review import ReviewResponse
 from app.services.review_service import ReviewService
@@ -13,9 +14,9 @@ service = ReviewService()
     "/session/{session_id}",
     response_model=ReviewResponse,
 )
-def get_session(session_id: str):
+def get_session(session_id: str, source: str = Query("upload")):
 
-    result = service.get_session(session_id)
+    result = service.get_session(session_id, source)
 
     return ReviewResponse(
         session_id=result["session_id"],
