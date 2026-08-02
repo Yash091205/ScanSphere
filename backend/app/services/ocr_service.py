@@ -48,6 +48,9 @@ class OCRService:
                 data,
             )
 
+        manager = SessionManager(session_id)
+        manager.update_status("ocr_completed")  
+
         return {
             "session_id": session_id,
             "status": "ocr_completed",

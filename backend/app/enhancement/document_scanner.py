@@ -1,7 +1,7 @@
 import cv2
 import imutils
 import numpy as np
-
+from app.core.exceptions import DocumentException
 
 class DocumentScanner:
 
@@ -13,7 +13,7 @@ class DocumentScanner:
         image = cv2.imread(image_path)
 
         if image is None:
-            raise ValueError("Unable to read image.")
+            raise DocumentException("Unable to read image.")
 
         original = image.copy()
 

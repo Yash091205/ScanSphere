@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from app.core.config import ENHANCED_DIR, REVIEW_DIR, UPLOAD_DIR,  OCR_DIR, SCANNED_DIR
+from app.core.config import ENHANCED_DIR, UPLOAD_DIR, SCANNED_DIR, OCR_DIR, REVIEW_DIR, OUTPUT_DIR
 from app.core.exceptions import UploadException
 
 
@@ -95,6 +95,17 @@ class SessionManager:
 
         with open(self.metadata_path, "w", encoding="utf-8") as file:
             json.dump(metadata, file, indent=4)
+
+    def update_status(
+        self,
+        status: str,
+    ):
+
+        metadata = self.read_metadata()
+
+        metadata["status"] = status
+
+        self.write_metadata(metadata)
 
     def list_pages(self, source: str = "upload") -> list[dict]:
         """
@@ -293,4 +304,14 @@ class SessionManager:
                 self.session_path / new_name
             )
 
-    
+
+    def get_output_path(self) -> Path:
+
+        output_path = OUTPUT_DIR / self.session_id
+
+        output_path.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        return output_path

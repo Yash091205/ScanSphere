@@ -23,13 +23,9 @@ if detection.success:
         3,
     )
 
-    print("Document Detected")
-    print("Area:", detection.area)
-    print("Contour:", detection.contour)
 
 else:
-
-    print("Document Not Found")
+    raise RuntimeError("Document not detected.")
 
 cv2.imshow("Detection", output)
 

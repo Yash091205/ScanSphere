@@ -137,6 +137,8 @@ class UploadService:
             total_pages=len(uploaded_pages),
         )
 
+        manager.update_status("uploaded")
+
         return {
             "session_id": session_id,
             "pages": uploaded_pages,

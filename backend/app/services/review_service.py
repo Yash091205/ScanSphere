@@ -199,7 +199,7 @@ class ReviewService:
                     indent=4,
                     ensure_ascii=False,
                 )
-
+        manager.update_status("review_completed")
         return {
             "message": "Review saved successfully."
         }

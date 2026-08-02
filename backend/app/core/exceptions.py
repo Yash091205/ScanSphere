@@ -23,3 +23,7 @@ class OCRException(ScanSphereException):
 class DocumentException(ScanSphereException):
     """Raised when DOCX generation fails."""
     pass
+
+class ReviewException(ScanSphereException):
+    """Raised when review processing fails."""
+    pass

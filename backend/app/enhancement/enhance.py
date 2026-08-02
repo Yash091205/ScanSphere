@@ -3,6 +3,7 @@ import numpy as np
 from pathlib import Path
 from app.utils.session_manager import SessionManager
 from app.scanner.scanner import DocumentScanner
+from app.core.exceptions import EnhancementException
 
 scanner = DocumentScanner()
 
@@ -11,7 +12,7 @@ def enhance_image(image_path: str):
     image = cv2.imread(image_path)
 
     if image is None:
-        raise ValueError("Unable to read image.")
+        raise EnhancementException("Unable to read image.")
 
     # 1. Grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -55,7 +56,6 @@ def enhance_image(image_path: str):
 
 
 def enhance_session(session_id: str):
-    print("\n========== ENHANCE SESSION STARTED ==========\n")
     manager = SessionManager(session_id)
 
     upload_path = manager.get_session_path()
