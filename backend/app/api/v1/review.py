@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from fastapi import Query
-from app.schemas.review import ReorderRequest
-from app.schemas.review import ReviewResponse
+from app.schemas.review import ReorderRequest, OCRReviewResponse, SaveReviewRequest, ReviewResponse
 from app.services.review_service import ReviewService
 from fastapi import File, UploadFile
 
@@ -99,25 +98,48 @@ async def append_pages(
     )
 
 
-@router.put(
-    "/session/{session_id}/reorder",
-    response_model=ReviewResponse,
+    @router.put(
+        "/session/{session_id}/reorder",
+        response_model=ReviewResponse,
+    )
+    def reorder_pages(
+        session_id: str,
+        request: ReorderRequest,
+    ):
+
+        result = service.reorder_pages(
+            session_id,
+            request.page_order,
+        )
+
+        return ReviewResponse(
+            session_id=result["session_id"],
+            status=result["status"],
+            document_type=result["document_type"],
+            original_file=result["original_file"],
+            total_pages=result["total_pages"],
+            pages=result["pages"],
+        )
+
+@router.get(
+    "/session/{session_id}/ocrfetch",
+    response_model=OCRReviewResponse,
 )
-def reorder_pages(
+def get_ocr_review(session_id: str):
+
+    result = service.get_ocr_text(session_id)
+
+    return OCRReviewResponse(**result)
+
+@router.put(
+    "/session/{session_id}/ocrreview",
+)
+def save_review(
     session_id: str,
-    request: ReorderRequest,
+    request: SaveReviewRequest,
 ):
 
-    result = service.reorder_pages(
+    return service.save_review(
         session_id,
-        request.page_order,
-    )
-
-    return ReviewResponse(
-        session_id=result["session_id"],
-        status=result["status"],
-        document_type=result["document_type"],
-        original_file=result["original_file"],
-        total_pages=result["total_pages"],
-        pages=result["pages"],
+        request.pages,
     )

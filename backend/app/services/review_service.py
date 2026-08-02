@@ -1,6 +1,7 @@
 from app.utils.session_manager import SessionManager
 from pathlib import Path
 from fastapi import UploadFile
+import json
 from app.core.config import MAX_FILE_SIZE_MB
 from app.core.exceptions import UploadException
 
@@ -144,4 +145,61 @@ class ReviewService:
             "original_file": metadata["original_file"],
             "total_pages": metadata["total_pages"],
             "pages": pages,
+        }
+
+    
+
+
+    def get_ocr_text(self, session_id: str):
+
+        manager = SessionManager(session_id)
+
+        ocr_path = manager.get_ocr_path()
+
+        pages = []
+
+        for file in sorted(ocr_path.glob("*.json")):
+
+            with open(file, encoding="utf-8") as f:
+                words = json.load(f)
+
+            text = " ".join(
+                word["text"]
+                for word in words
+            )
+
+            pages.append({
+                "page": file.stem,
+                "text": text,
+            })
+
+        return {
+            "session_id": session_id,
+            "pages": pages,
+        }
+
+    def save_review(
+        self,
+        session_id: str,
+        pages: list,
+    ):
+
+        manager = SessionManager(session_id)
+
+        review_path = manager.get_review_path()
+
+        for page in pages:
+
+            file = review_path / f"{page.page}.json"
+
+            with open(file, "w", encoding="utf-8") as f:
+                json.dump(
+                    page.model_dump(),
+                    f,
+                    indent=4,
+                    ensure_ascii=False,
+                )
+
+        return {
+            "message": "Review saved successfully."
         }

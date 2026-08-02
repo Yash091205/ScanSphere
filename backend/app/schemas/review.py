@@ -24,3 +24,17 @@ class ReviewResponse(BaseModel):
 
 class ReorderRequest(BaseModel):
     page_order: list[int]
+
+
+class OCRPage(BaseModel):
+    page: str
+    text: str
+
+
+class OCRReviewResponse(BaseModel):
+    session_id: str
+    pages: list[OCRPage]
+
+
+class SaveReviewRequest(BaseModel):
+    pages: list[OCRPage]

@@ -28,3 +28,9 @@ build/
 # Operating System
 .DS_Store
 Thumbs.db
+
+temp/
+
+# OS files
+.DS_Store
+Thumbs.db

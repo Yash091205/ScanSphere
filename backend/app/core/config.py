@@ -19,6 +19,7 @@ UPLOAD_DIR = TEMP_DIR / "uploads"
 SCANNED_DIR = TEMP_DIR / "scanned"
 ENHANCED_DIR = TEMP_DIR / "enhanced"
 OCR_DIR = TEMP_DIR / "ocr"
+REVIEW_DIR = TEMP_DIR / "review"
 OUTPUT_DIR = TEMP_DIR / "outputs"
 
 # ---------------------------------------------------
