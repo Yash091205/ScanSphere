@@ -7,6 +7,8 @@ from app.api.v1.document import router as document_router
 from app.api.v1.ocr import router as ocr_router
 from app.api.v1.enhancement import router as enhancement_router
 from app.core.config import PROJECT_NAME, VERSION
+from fastapi.staticfiles import StaticFiles
+from app.core.config import TEMP_DIR
 
 app = FastAPI(
     title=PROJECT_NAME,
@@ -21,6 +23,12 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+app.mount(
+    "/temp",
+    StaticFiles(directory=TEMP_DIR),
+    name="temp",
 )
 
 app.include_router(
