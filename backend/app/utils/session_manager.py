@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from app.core.config import ENHANCED_DIR, UPLOAD_DIR
+from app.core.config import ENHANCED_DIR, UPLOAD_DIR,  OCR_DIR, SCANNED_DIR
 from app.core.exceptions import UploadException
 
 
@@ -18,6 +18,17 @@ class SessionManager:
     def get_session_path(self) -> Path:
         return self.session_path
 
+    def get_scanned_path(self) -> Path:
+
+        scanned_path = SCANNED_DIR / self.session_id
+
+        scanned_path.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        return scanned_path
+
     def get_enhanced_path(self) -> Path:
 
         enhanced_path = ENHANCED_DIR / self.session_id
@@ -28,6 +39,17 @@ class SessionManager:
         )
 
         return enhanced_path
+
+    def get_ocr_path(self) -> Path:
+
+        ocr_path = OCR_DIR / self.session_id
+
+        ocr_path.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        return ocr_path
 
     def get_metadata_path(self) -> Path:
         return self.metadata_path
@@ -259,3 +281,5 @@ class SessionManager:
             file.rename(
                 self.session_path / new_name
             )
+
+    

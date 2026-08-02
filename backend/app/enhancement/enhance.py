@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 from pathlib import Path
 from app.utils.session_manager import SessionManager
+from app.scanner.scanner import DocumentScanner
+
+scanner = DocumentScanner()
 
 def enhance_image(image_path: str):
 
@@ -52,7 +55,7 @@ def enhance_image(image_path: str):
 
 
 def enhance_session(session_id: str):
-
+    print("\n========== ENHANCE SESSION STARTED ==========\n")
     manager = SessionManager(session_id)
 
     upload_path = manager.get_session_path()
@@ -64,7 +67,31 @@ def enhance_session(session_id: str):
 
         image_path = upload_path / page["stored_name"]
 
-        enhanced = enhance_image(str(image_path))
+        # -----------------------------
+        # Step 1 : Scan the document
+        # -----------------------------
+        scanned = scanner.scan(str(image_path))
+
+        if scanned is not None:
+
+            scanned_path = manager.get_scanned_path() / page["stored_name"]
+
+            cv2.imwrite(
+                str(scanned_path),
+                scanned,
+            )
+
+            image_for_enhancement = scanned_path
+
+        else:
+
+            # Fallback if scanner cannot detect the page
+            image_for_enhancement = image_path
+
+        # -----------------------------
+        # Step 2 : Enhance
+        # -----------------------------
+        enhanced = enhance_image(str(image_for_enhancement))
 
         output_path = enhanced_path / page["stored_name"]
 

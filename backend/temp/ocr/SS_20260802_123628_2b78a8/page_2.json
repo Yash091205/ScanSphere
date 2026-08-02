@@ -1,0 +1,392 @@
+[
+    {
+        "text": "Page",
+        "confidence": 96.0,
+        "bbox": [
+            654,
+            345,
+            171,
+            71
+        ]
+    },
+    {
+        "text": "2",
+        "confidence": 93.0,
+        "bbox": [
+            850,
+            346,
+            37,
+            54
+        ]
+    },
+    {
+        "text": "-",
+        "confidence": 91.0,
+        "bbox": [
+            913,
+            374,
+            20,
+            11
+        ]
+    },
+    {
+        "text": "Laboratory",
+        "confidence": 96.0,
+        "bbox": [
+            963,
+            345,
+            384,
+            71
+        ]
+    },
+    {
+        "text": "Investigation",
+        "confidence": 94.0,
+        "bbox": [
+            1374,
+            345,
+            453,
+            71
+        ]
+    },
+    {
+        "text": "Complete",
+        "confidence": 96.0,
+        "bbox": [
+            327,
+            452,
+            186,
+            40
+        ]
+    },
+    {
+        "text": "Blood",
+        "confidence": 96.0,
+        "bbox": [
+            530,
+            452,
+            112,
+            32
+        ]
+    },
+    {
+        "text": "Count",
+        "confidence": 96.0,
+        "bbox": [
+            658,
+            452,
+            117,
+            32
+        ]
+    },
+    {
+        "text": "(CBC)",
+        "confidence": 96.0,
+        "bbox": [
+            790,
+            452,
+            114,
+            40
+        ]
+    },
+    {
+        "text": "Hemoglobin:",
+        "confidence": 95.0,
+        "bbox": [
+            328,
+            502,
+            229,
+            40
+        ]
+    },
+    {
+        "text": "14.2",
+        "confidence": 96.0,
+        "bbox": [
+            575,
+            503,
+            75,
+            30
+        ]
+    },
+    {
+        "text": "g/dL",
+        "confidence": 96.0,
+        "bbox": [
+            664,
+            502,
+            79,
+            40
+        ]
+    },
+    {
+        "text": "WBC",
+        "confidence": 96.0,
+        "bbox": [
+            326,
+            552,
+            94,
+            32
+        ]
+    },
+    {
+        "text": "Court:",
+        "confidence": 90.0,
+        "bbox": [
+            436,
+            552,
+            118,
+            32
+        ]
+    },
+    {
+        "text": "9,400",
+        "confidence": 89.0,
+        "bbox": [
+            570,
+            553,
+            100,
+            36
+        ]
+    },
+    {
+        "text": "/uL",
+        "confidence": 89.0,
+        "bbox": [
+            684,
+            552,
+            57,
+            40
+        ]
+    },
+    {
+        "text": "Platelets:",
+        "confidence": 96.0,
+        "bbox": [
+            329,
+            602,
+            165,
+            32
+        ]
+    },
+    {
+        "text": "2.65",
+        "confidence": 96.0,
+        "bbox": [
+            509,
+            603,
+            78,
+            31
+        ]
+    },
+    {
+        "text": "Lakhs",
+        "confidence": 93.0,
+        "bbox": [
+            604,
+            602,
+            106,
+            32
+        ]
+    },
+    {
+        "text": "/uL",
+        "confidence": 91.0,
+        "bbox": [
+            723,
+            602,
+            57,
+            40
+        ]
+    },
+    {
+        "text": "ESR:",
+        "confidence": 96.0,
+        "bbox": [
+            329,
+            652,
+            91,
+            32
+        ]
+    },
+    {
+        "text": "18",
+        "confidence": 93.0,
+        "bbox": [
+            438,
+            653,
+            40,
+            31
+        ]
+    },
+    {
+        "text": "mm/hr",
+        "confidence": 88.0,
+        "bbox": [
+            495,
+            652,
+            115,
+            32
+        ]
+    },
+    {
+        "text": "Biochemistry",
+        "confidence": 96.0,
+        "bbox": [
+            328,
+            752,
+            261,
+            40
+        ]
+    },
+    {
+        "text": "Blood",
+        "confidence": 96.0,
+        "bbox": [
+            328,
+            802,
+            101,
+            32
+        ]
+    },
+    {
+        "text": "Sugar",
+        "confidence": 96.0,
+        "bbox": [
+            445,
+            802,
+            109,
+            40
+        ]
+    },
+    {
+        "text": "(Fasting):",
+        "confidence": 94.0,
+        "bbox": [
+            569,
+            802,
+            171,
+            40
+        ]
+    },
+    {
+        "text": "92",
+        "confidence": 94.0,
+        "bbox": [
+            755,
+            803,
+            43,
+            31
+        ]
+    },
+    {
+        "text": "mg/dL",
+        "confidence": 94.0,
+        "bbox": [
+            814,
+            802,
+            112,
+            40
+        ]
+    },
+    {
+        "text": "Creatinine:",
+        "confidence": 96.0,
+        "bbox": [
+            327,
+            852,
+            197,
+            32
+        ]
+    },
+    {
+        "text": "0.9",
+        "confidence": 96.0,
+        "bbox": [
+            540,
+            853,
+            54,
+            31
+        ]
+    },
+    {
+        "text": "mg/dL",
+        "confidence": 95.0,
+        "bbox": [
+            610,
+            852,
+            112,
+            40
+        ]
+    },
+    {
+        "text": "Urea:",
+        "confidence": 96.0,
+        "bbox": [
+            328,
+            902,
+            97,
+            32
+        ]
+    },
+    {
+        "text": "28",
+        "confidence": 96.0,
+        "bbox": [
+            440,
+            903,
+            43,
+            31
+        ]
+    },
+    {
+        "text": "mg/dL",
+        "confidence": 94.0,
+        "bbox": [
+            499,
+            902,
+            112,
+            40
+        ]
+    },
+    {
+        "text": "Liver",
+        "confidence": 96.0,
+        "bbox": [
+            328,
+            952,
+            87,
+            32
+        ]
+    },
+    {
+        "text": "Function",
+        "confidence": 96.0,
+        "bbox": [
+            431,
+            952,
+            153,
+            32
+        ]
+    },
+    {
+        "text": "Test:",
+        "confidence": 96.0,
+        "bbox": [
+            599,
+            952,
+            90,
+            32
+        ]
+    },
+    {
+        "text": "Normal",
+        "confidence": 96.0,
+        "bbox": [
+            705,
+            952,
+            129,
+            32
+        ]
+    }
+]

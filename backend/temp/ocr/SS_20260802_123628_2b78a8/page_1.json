@@ -1,0 +1,422 @@
+[
+    {
+        "text": "Page",
+        "confidence": 94.0,
+        "bbox": [
+            750,
+            345,
+            171,
+            71
+        ]
+    },
+    {
+        "text": "1",
+        "confidence": 92.0,
+        "bbox": [
+            949,
+            347,
+            24,
+            53
+        ]
+    },
+    {
+        "text": "-",
+        "confidence": 92.0,
+        "bbox": [
+            1009,
+            374,
+            20,
+            11
+        ]
+    },
+    {
+        "text": "Patient",
+        "confidence": 96.0,
+        "bbox": [
+            1059,
+            345,
+            242,
+            57
+        ]
+    },
+    {
+        "text": "Information",
+        "confidence": 96.0,
+        "bbox": [
+            1329,
+            345,
+            402,
+            57
+        ]
+    },
+    {
+        "text": "Hospital:",
+        "confidence": 93.0,
+        "bbox": [
+            328,
+            452,
+            173,
+            40
+        ]
+    },
+    {
+        "text": "CityCare",
+        "confidence": 91.0,
+        "bbox": [
+            517,
+            452,
+            158,
+            40
+        ]
+    },
+    {
+        "text": "Multispeciality",
+        "confidence": 92.0,
+        "bbox": [
+            691,
+            452,
+            256,
+            40
+        ]
+    },
+    {
+        "text": "Hospital",
+        "confidence": 96.0,
+        "bbox": [
+            963,
+            452,
+            144,
+            40
+        ]
+    },
+    {
+        "text": "Patient",
+        "confidence": 96.0,
+        "bbox": [
+            328,
+            502,
+            135,
+            32
+        ]
+    },
+    {
+        "text": "Name:",
+        "confidence": 96.0,
+        "bbox": [
+            478,
+            502,
+            122,
+            32
+        ]
+    },
+    {
+        "text": "Rahul",
+        "confidence": 95.0,
+        "bbox": [
+            618,
+            502,
+            103,
+            32
+        ]
+    },
+    {
+        "text": "Sharma",
+        "confidence": 96.0,
+        "bbox": [
+            737,
+            502,
+            143,
+            32
+        ]
+    },
+    {
+        "text": "Age:",
+        "confidence": 96.0,
+        "bbox": [
+            326,
+            552,
+            89,
+            40
+        ]
+    },
+    {
+        "text": "24",
+        "confidence": 96.0,
+        "bbox": [
+            430,
+            553,
+            44,
+            30
+        ]
+    },
+    {
+        "text": "Years",
+        "confidence": 96.0,
+        "bbox": [
+            487,
+            552,
+            107,
+            32
+        ]
+    },
+    {
+        "text": "Gender:",
+        "confidence": 96.0,
+        "bbox": [
+            327,
+            602,
+            155,
+            32
+        ]
+    },
+    {
+        "text": "Male",
+        "confidence": 96.0,
+        "bbox": [
+            499,
+            602,
+            86,
+            32
+        ]
+    },
+    {
+        "text": "Patient",
+        "confidence": 96.0,
+        "bbox": [
+            328,
+            652,
+            135,
+            32
+        ]
+    },
+    {
+        "text": "ID:",
+        "confidence": 92.0,
+        "bbox": [
+            478,
+            652,
+            50,
+            31
+        ]
+    },
+    {
+        "text": "HSP2025-001245",
+        "confidence": 90.0,
+        "bbox": [
+            546,
+            652,
+            326,
+            32
+        ]
+    },
+    {
+        "text": "Date",
+        "confidence": 96.0,
+        "bbox": [
+            328,
+            702,
+            86,
+            32
+        ]
+    },
+    {
+        "text": "of",
+        "confidence": 96.0,
+        "bbox": [
+            428,
+            703,
+            38,
+            31
+        ]
+    },
+    {
+        "text": "Admission:",
+        "confidence": 96.0,
+        "bbox": [
+            479,
+            702,
+            223,
+            32
+        ]
+    },
+    {
+        "text": "10-07-2025",
+        "confidence": 95.0,
+        "bbox": [
+            721,
+            703,
+            206,
+            31
+        ]
+    },
+    {
+        "text": "Consultant:",
+        "confidence": 96.0,
+        "bbox": [
+            327,
+            752,
+            227,
+            32
+        ]
+    },
+    {
+        "text": "Dr.",
+        "confidence": 96.0,
+        "bbox": [
+            572,
+            752,
+            48,
+            31
+        ]
+    },
+    {
+        "text": "Anjali",
+        "confidence": 96.0,
+        "bbox": [
+            636,
+            752,
+            98,
+            40
+        ]
+    },
+    {
+        "text": "Deshmukh",
+        "confidence": 96.0,
+        "bbox": [
+            752,
+            752,
+            193,
+            32
+        ]
+    },
+    {
+        "text": "Chief",
+        "confidence": 96.0,
+        "bbox": [
+            327,
+            802,
+            102,
+            32
+        ]
+    },
+    {
+        "text": "Complaint:",
+        "confidence": 96.0,
+        "bbox": [
+            443,
+            802,
+            213,
+            40
+        ]
+    },
+    {
+        "text": "Fever,",
+        "confidence": 96.0,
+        "bbox": [
+            674,
+            802,
+            111,
+            37
+        ]
+    },
+    {
+        "text": "cough,",
+        "confidence": 96.0,
+        "bbox": [
+            801,
+            802,
+            120,
+            40
+        ]
+    },
+    {
+        "text": "body",
+        "confidence": 96.0,
+        "bbox": [
+            938,
+            802,
+            88,
+            40
+        ]
+    },
+    {
+        "text": "pain",
+        "confidence": 96.0,
+        "bbox": [
+            1040,
+            802,
+            74,
+            40
+        ]
+    },
+    {
+        "text": "for",
+        "confidence": 96.0,
+        "bbox": [
+            1129,
+            802,
+            48,
+            32
+        ]
+    },
+    {
+        "text": "4",
+        "confidence": 96.0,
+        "bbox": [
+            1190,
+            803,
+            20,
+            30
+        ]
+    },
+    {
+        "text": "days.",
+        "confidence": 96.0,
+        "bbox": [
+            1225,
+            802,
+            95,
+            40
+        ]
+    },
+    {
+        "text": "Provisional",
+        "confidence": 96.0,
+        "bbox": [
+            328,
+            852,
+            219,
+            32
+        ]
+    },
+    {
+        "text": "Diagnosis:",
+        "confidence": 96.0,
+        "bbox": [
+            564,
+            852,
+            208,
+            40
+        ]
+    },
+    {
+        "text": "Viral",
+        "confidence": 96.0,
+        "bbox": [
+            787,
+            852,
+            80,
+            32
+        ]
+    },
+    {
+        "text": "Fever",
+        "confidence": 96.0,
+        "bbox": [
+            884,
+            852,
+            103,
+            32
+        ]
+    }
+]

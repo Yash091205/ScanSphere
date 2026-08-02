@@ -16,7 +16,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 TEMP_DIR = BASE_DIR / "temp"
 
 UPLOAD_DIR = TEMP_DIR / "uploads"
+SCANNED_DIR = TEMP_DIR / "scanned"
 ENHANCED_DIR = TEMP_DIR / "enhanced"
+OCR_DIR = TEMP_DIR / "ocr"
 OUTPUT_DIR = TEMP_DIR / "outputs"
 
 # ---------------------------------------------------
