@@ -21,19 +21,21 @@ class DocumentService:
 
         document = Document()
 
-        review_files = sorted(
-            review_path.glob("*.json"),
-            key=lambda file: int(file.stem.split("_")[1])
-        )
+        pages = manager.list_pages()
+        review_files_data = []
 
-        for index, file in enumerate(review_files):
+        for page in pages:
+            page_id = page["page_id"]
+            review_file = review_path / f"{page_id}.json"
+            if review_file.exists():
+                with open(review_file, "r", encoding="utf-8") as f:
+                    review_files_data.append(json.load(f))
 
-            with open(file, "r", encoding="utf-8") as f:
-                page = json.load(f)
+        for index, page in enumerate(review_files_data):
 
             document.add_paragraph(page["text"])
 
-            if index != len(review_files) - 1:
+            if index != len(review_files_data) - 1:
                 document.add_page_break()
 
         output_file = output_path / "output.docx"

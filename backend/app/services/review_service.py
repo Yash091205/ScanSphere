@@ -24,15 +24,11 @@ class ReviewService:
             "pages": pages,
         }
 
-    def delete_page(self, session_id: str, page_number: int):
+    def delete_page(self, session_id: str, page_id: str):
 
         manager = SessionManager(session_id)
 
-        manager.delete_page(page_number)
-
-        manager.rename_pages()
-
-        manager.update_total_pages()
+        manager.delete_page(page_id)
 
         metadata = manager.read_metadata()
 
@@ -48,10 +44,10 @@ class ReviewService:
         }
 
     async def replace_page(
-    self,
-    session_id: str,
-    page_number: int,
-    file: UploadFile,
+        self,
+        session_id: str,
+        page_id: str,
+        file: UploadFile,
     ):
 
         extension = Path(file.filename).suffix.lower()
@@ -68,7 +64,7 @@ class ReviewService:
 
         manager = SessionManager(session_id)
 
-        manager.replace_page(page_number, contents, extension)
+        manager.replace_page(page_id, contents, extension)
 
         metadata = manager.read_metadata()
 
@@ -84,9 +80,9 @@ class ReviewService:
         }
 
     async def append_pages(
-    self,
-    session_id: str,
-    files: list[UploadFile],
+        self,
+        session_id: str,
+        files: list[UploadFile],
     ):
 
         manager = SessionManager(session_id)
@@ -107,7 +103,7 @@ class ReviewService:
                     f"File exceeds {MAX_FILE_SIZE_MB} MB."
                 )
 
-            uploaded_files.append((contents, extension))
+            uploaded_files.append((contents, extension, file.filename))
 
         manager.append_pages(uploaded_files)
 
@@ -127,7 +123,7 @@ class ReviewService:
     def reorder_pages(
         self,
         session_id: str,
-        page_order: list[int],
+        page_order: list[str],
     ):
 
         manager = SessionManager(session_id)
@@ -147,9 +143,6 @@ class ReviewService:
             "pages": pages,
         }
 
-    
-
-
     def get_ocr_text(self, session_id: str):
 
         manager = SessionManager(session_id)
@@ -157,21 +150,25 @@ class ReviewService:
         ocr_path = manager.get_ocr_path()
 
         pages = []
+        ordered_pages = manager.list_pages("enhanced")
 
-        for file in sorted(ocr_path.glob("*.json")):
+        for page in ordered_pages:
+            page_id = page["page_id"]
+            ocr_file = ocr_path / f"{page_id}.json"
 
-            with open(file, encoding="utf-8") as f:
-                words = json.load(f)
+            if ocr_file.exists():
+                with open(ocr_file, encoding="utf-8") as f:
+                    words = json.load(f)
 
-            text = " ".join(
-                word["text"]
-                for word in words
-            )
+                text = " ".join(
+                    word["text"]
+                    for word in words
+                )
 
-            pages.append({
-                "page": file.stem,
-                "text": text,
-            })
+                pages.append({
+                    "page": page_id,
+                    "text": text,
+                })
 
         return {
             "session_id": session_id,
@@ -202,4 +199,4 @@ class ReviewService:
         manager.update_status("review_completed")
         return {
             "message": "Review saved successfully."
-        }
+        }

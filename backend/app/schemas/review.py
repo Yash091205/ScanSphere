@@ -2,9 +2,13 @@ from pydantic import BaseModel
 
 
 class ReviewPage(BaseModel):
+    id: str
+    page_id: str
     page_number: int
     stored_name: str
+    original_name: str
     preview_url: str
+    enhanced_preview_url: str | None = None
 
 
 class ReviewResponse(BaseModel):
@@ -23,7 +27,7 @@ class ReviewResponse(BaseModel):
     pages: list[ReviewPage]
 
 class ReorderRequest(BaseModel):
-    page_order: list[int]
+    page_order: list[str]
 
 
 class OCRPage(BaseModel):

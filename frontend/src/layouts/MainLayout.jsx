@@ -21,6 +21,8 @@ export default function MainLayout({ children }) {
 
             <Link to="/review">Review</Link>
 
+            <Link to="/enhancement-review">Enhancement Review</Link>
+
             <Link to="/ocr">OCR</Link>
 
             <Link to="/download">Download</Link>

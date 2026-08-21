@@ -27,17 +27,17 @@ def get_session(session_id: str, source: str = Query("upload")):
     )
 
 @router.delete(
-    "/session/{session_id}/page/{page_number}",
+    "/session/{session_id}/page/{page_id}",
     response_model=ReviewResponse,
 )
 def delete_page(
     session_id: str,
-    page_number: int,
+    page_id: str,
 ):
 
     result = service.delete_page(
         session_id,
-        page_number,
+        page_id,
     )
 
     return ReviewResponse(
@@ -50,18 +50,18 @@ def delete_page(
     )
 
 @router.put(
-    "/session/{session_id}/page/{page_number}",
+    "/session/{session_id}/page/{page_id}",
     response_model=ReviewResponse,
 )
 async def replace_page(
     session_id: str,
-    page_number: int,
+    page_id: str,
     file: UploadFile = File(...),
 ):
 
     result = await service.replace_page(
         session_id,
-        page_number,
+        page_id,
         file,
     )
 
@@ -98,28 +98,28 @@ async def append_pages(
     )
 
 
-    @router.put(
-        "/session/{session_id}/reorder",
-        response_model=ReviewResponse,
+@router.put(
+    "/session/{session_id}/reorder",
+    response_model=ReviewResponse,
+)
+def reorder_pages(
+    session_id: str,
+    request: ReorderRequest,
+):
+
+    result = service.reorder_pages(
+        session_id,
+        request.page_order,
     )
-    def reorder_pages(
-        session_id: str,
-        request: ReorderRequest,
-    ):
 
-        result = service.reorder_pages(
-            session_id,
-            request.page_order,
-        )
-
-        return ReviewResponse(
-            session_id=result["session_id"],
-            status=result["status"],
-            document_type=result["document_type"],
-            original_file=result["original_file"],
-            total_pages=result["total_pages"],
-            pages=result["pages"],
-        )
+    return ReviewResponse(
+        session_id=result["session_id"],
+        status=result["status"],
+        document_type=result["document_type"],
+        original_file=result["original_file"],
+        total_pages=result["total_pages"],
+        pages=result["pages"],
+    )
 
 @router.get(
     "/session/{session_id}/ocrfetch",

@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from app.ocr.ocr_engine import (
     extract_ocr_data,
     save_ocr_json,
@@ -12,47 +10,65 @@ class OCRService:
     def process_session(
         self,
         session_id: str,
+        page_selections,
     ):
 
         manager = SessionManager(session_id)
 
+        upload_path = manager.get_session_path()
         enhanced_path = manager.get_enhanced_path()
         ocr_path = manager.get_ocr_path()
 
-        image_extensions = {
-            ".png",
-            ".jpg",
-            ".jpeg",
-            ".webp",
-        }
+        processed_count = 0
 
-        image_files = [
-            file
-            for file in enhanced_path.iterdir()
-            if file.is_file()
-            and file.suffix.lower() in image_extensions
-        ]
+        for selection in page_selections:
 
-        image_files.sort(
-            key=lambda file: int(file.stem.split("_")[1])
-        )
+            page_id = selection.page_id
+            source = selection.source
 
-        for image in image_files:
+            metadata = manager.read_metadata()
+            pages_dict = metadata.get("pages", {})
 
-            data = extract_ocr_data(str(image))
+            page_info = pages_dict.get(page_id)
 
-            output = ocr_path / f"{image.stem}.json"
+            if not page_info:
+                continue
+
+            stored_name = page_info.get(
+                "stored_name",
+                f"{page_id}.png"
+            )
+
+            # Choose the image according to user's selection
+            if source == "enhanced":
+
+                image_path = enhanced_path / stored_name
+
+            elif source == "original":
+
+                image_path = upload_path / stored_name
+
+            else:
+                continue
+
+            if not image_path.exists():
+                continue
+
+            data = extract_ocr_data(str(image_path))
+
+            output = ocr_path / f"{page_id}.json"
 
             save_ocr_json(
                 output,
                 data,
             )
 
-        manager = SessionManager(session_id)
-        manager.update_status("ocr_completed")  
+            processed_count += 1
+
+        manager.update_status("ocr_completed")
 
         return {
             "session_id": session_id,
             "status": "ocr_completed",
-            "processed_pages": len(image_files),
+            "processed_pages": processed_count,
         }

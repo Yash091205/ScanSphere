@@ -2,12 +2,13 @@ import fitz
 from PIL import Image
 import io
 from pathlib import Path
+from uuid import uuid4
 
 
 def pdf_to_images(pdf_path: Path, output_folder: Path):
     document = fitz.open(pdf_path)
 
-    image_paths = []
+    page_items = []
 
     for page_index in range(len(document)):
         page = document.load_page(page_index)
@@ -16,12 +17,13 @@ def pdf_to_images(pdf_path: Path, output_folder: Path):
 
         image = Image.open(io.BytesIO(pix.tobytes("png")))
 
-        output = output_folder / f"page_{page_index+1}.png"
+        page_id = f"p_{uuid4().hex[:8]}"
+        output = output_folder / f"{page_id}.png"
 
         image.save(output)
 
-        image_paths.append(output)
+        page_items.append((page_id, output))
 
     document.close()
 
-    return image_paths
+    return page_items

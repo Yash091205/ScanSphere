@@ -1,8 +1,5 @@
-from pydantic import BaseModel
+from app.schemas.review import ReviewResponse
 
 
-class EnhancementResponse(BaseModel):
-    success: bool = True
-    session_id: str
-    status: str
-    enhanced_pages: int
+class EnhancementResponse(ReviewResponse):
+    pass

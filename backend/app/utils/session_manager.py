@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from uuid import uuid4
 
 from app.core.config import ENHANCED_DIR, UPLOAD_DIR, SCANNED_DIR, OCR_DIR, REVIEW_DIR, OUTPUT_DIR
 from app.core.exceptions import UploadException
@@ -70,6 +71,8 @@ class SessionManager:
         original_file: str,
         document_type: str,
         total_pages: int,
+        page_order: list[str] = None,
+        pages_dict: dict = None,
     ):
 
         metadata = {
@@ -78,6 +81,8 @@ class SessionManager:
             "document_type": document_type,
             "total_pages": total_pages,
             "status": "uploaded",
+            "page_order": page_order if page_order is not None else [],
+            "pages": pages_dict if pages_dict is not None else {},
         }
 
         with open(self.metadata_path, "w", encoding="utf-8") as file:
@@ -109,201 +114,161 @@ class SessionManager:
 
     def list_pages(self, source: str = "upload") -> list[dict]:
         """
-        List pages from upload or enhanced folder.
-        """
-
-        if source == "upload":
-            folder = self.session_path
-            preview_prefix = "/temp/uploads"
-        elif source == "enhanced":
-            folder = self.get_enhanced_path()
-            preview_prefix = "/temp/enhanced"
-        else:
-            raise UploadException("Invalid source.")
-
-        image_extensions = {".png", ".jpg", ".jpeg", ".webp"}
-
-        pages = []
-
-        image_files = [
-            file
-            for file in folder.iterdir()
-            if file.is_file() and file.suffix.lower() in image_extensions
-        ]
-
-        image_files.sort(
-            key=lambda file: int(file.stem.split("_")[1])
-        )
-
-        for index, file in enumerate(image_files, start=1):
-
-            pages.append(
-                {
-                    "page_number": index,
-                    "stored_name": file.name,
-                    "preview_url": f"{preview_prefix}/{self.session_id}/{file.name}",
-                }
-            )
-
-        return pages
-
-    def delete_page(self, page_number: int):
-        """
-        Delete a page from the session.
-        """
-
-        pages = self.list_pages()
-
-        page = next(
-            (
-                p
-                for p in pages
-                if p["page_number"] == page_number
-            ),
-            None,
-        )
-
-        if page is None:
-            raise UploadException(
-                f"Page {page_number} not found."
-            )
-
-        page_path = self.session_path / page["stored_name"]
-
-        page_path.unlink()
-
-    def rename_pages(self):
-        """
-        Rename pages sequentially after delete or reorder.
-        """
-
-        pages = self.list_pages()
-
-        #
-        # Step 1
-        # Temporary names
-        #
-
-        for index, page in enumerate(pages, start=1):
-
-            old_path = self.session_path / page["stored_name"]
-
-            suffix = old_path.suffix
-
-            temp_path = self.session_path / f"temp_{index}{suffix}"
-
-            old_path.rename(temp_path)
-
-        #
-        # Step 2
-        # Final names
-        #
-
-        temp_files = sorted(
-            self.session_path.glob("temp_*")
-        )
-
-        for index, file in enumerate(temp_files, start=1):
-
-            new_name = f"page_{index}{file.suffix}"
-
-            file.rename(
-                self.session_path / new_name
-            )
-
-    def update_total_pages(self):
-        """
-        Update total_pages in metadata.json based on the
-        current number of pages in the session.
+        List pages in order using session metadata.
         """
 
         metadata = self.read_metadata()
 
-        metadata["total_pages"] = len(self.list_pages())
+        if source == "upload":
+            preview_prefix = "/temp/uploads"
+        elif source == "enhanced":
+            preview_prefix = "/temp/enhanced"
+        else:
+            raise UploadException("Invalid source.")
+
+        page_order = metadata.get("page_order", [])
+        pages_dict = metadata.get("pages", {})
+
+        pages = []
+        for index, page_id in enumerate(page_order, start=1):
+            if page_id in pages_dict:
+                page_info = pages_dict[page_id]
+                stored_name = page_info.get("stored_name", f"{page_id}.png")
+                version = page_info.get("version", 1)
+                
+                pages.append(
+                    {
+                        "id": page_id,
+                        "page_id": page_id,
+                        "page_number": index,
+                        "stored_name": stored_name,
+                        "original_name": page_info.get("original_name", f"Page {index}"),
+                        "preview_url": f"{preview_prefix}/{self.session_id}/{stored_name}?v={version}",
+                        "enhanced_preview_url": f"/temp/enhanced/{self.session_id}/{stored_name}?v={version}",
+                    }
+                )
+
+        return pages
+
+    def delete_page(self, page_id: str):
+        """
+        Delete a page from the session by page_id.
+        """
+
+        metadata = self.read_metadata()
+        page_order = metadata.get("page_order", [])
+        pages_dict = metadata.get("pages", {})
+
+        if page_id not in page_order:
+            raise UploadException(f"Page {page_id} not found.")
+
+        page_info = pages_dict.get(page_id, {})
+        stored_name = page_info.get("stored_name", f"{page_id}.png")
+
+        # Remove from page_order and pages_dict
+        page_order.remove(page_id)
+        pages_dict.pop(page_id, None)
+
+        # Remove physical file if present
+        page_path = self.session_path / stored_name
+        if page_path.exists():
+            page_path.unlink()
+
+        # Also remove enhanced file if present
+        enhanced_path = self.get_enhanced_path() / stored_name
+        if enhanced_path.exists():
+            enhanced_path.unlink()
+
+        metadata["page_order"] = page_order
+        metadata["pages"] = pages_dict
+        metadata["total_pages"] = len(page_order)
 
         self.write_metadata(metadata)
 
-    def replace_page(self, page_number: int, contents: bytes, extension: str):
+    def rename_pages(self):
+        """
+        Legacy method - no-op in metadata-driven ordering architecture.
+        """
+        pass
 
-        pages = self.list_pages()
+    def update_total_pages(self):
+        """
+        Update total_pages in metadata.json based on current page_order length.
+        """
 
-        page = next(
-            (p for p in pages if p["page_number"] == page_number),
-            None,
-        )
+        metadata = self.read_metadata()
+        metadata["total_pages"] = len(metadata.get("page_order", []))
+        self.write_metadata(metadata)
 
-        if page is None:
-            raise UploadException(f"Page {page_number} not found.")
+    def replace_page(self, page_id: str, contents: bytes, extension: str):
 
-        old_path = self.session_path / page["stored_name"]
+        metadata = self.read_metadata()
+        pages_dict = metadata.get("pages", {})
 
-        old_path.unlink()
+        if page_id not in pages_dict:
+            raise UploadException(f"Page {page_id} not found.")
 
-        new_path = self.session_path / f"page_{page_number}{extension}"
+        page_info = pages_dict[page_id]
+        old_stored_name = page_info.get("stored_name", f"{page_id}.png")
 
+        # Delete old file
+        old_path = self.session_path / old_stored_name
+        if old_path.exists():
+            old_path.unlink()
+
+        new_stored_name = f"{page_id}{extension}"
+        new_path = self.session_path / new_stored_name
         new_path.write_bytes(contents)
 
-    def append_pages(self, files: list[tuple[bytes, str]]):
+        # Update metadata info and increment version for cache control
+        page_info["stored_name"] = new_stored_name
+        page_info["version"] = page_info.get("version", 1) + 1
 
-        pages = self.list_pages()
+        self.write_metadata(metadata)
 
-        next_page = len(pages) + 1
+    def append_pages(self, files: list[tuple[bytes, str, str]]):
+        """
+        files: list of tuples (file_bytes, extension, original_name)
+        """
 
-        for contents, extension in files:
+        metadata = self.read_metadata()
+        page_order = metadata.get("page_order", [])
+        pages_dict = metadata.get("pages", {})
 
-            new_path = self.session_path / f"page_{next_page}{extension}"
-
+        for contents, extension, original_name in files:
+            page_id = f"p_{uuid4().hex[:8]}"
+            stored_name = f"{page_id}{extension}"
+            
+            new_path = self.session_path / stored_name
             new_path.write_bytes(contents)
 
-            next_page += 1
+            pages_dict[page_id] = {
+                "page_id": page_id,
+                "stored_name": stored_name,
+                "original_name": original_name,
+                "version": 1
+            }
+            page_order.append(page_id)
 
-        self.update_total_pages()
+        metadata["page_order"] = page_order
+        metadata["pages"] = pages_dict
+        metadata["total_pages"] = len(page_order)
 
-    def reorder_pages(self, page_order: list[int]):
+        self.write_metadata(metadata)
+
+    def reorder_pages(self, new_page_order: list[str]):
         """
-        Reorder pages according to the given page order.
-        Example:
-        [3,1,4,2]
+        Reorder pages according to the given list of page_id strings.
         """
 
-        pages = self.list_pages()
+        metadata = self.read_metadata()
+        current_order = metadata.get("page_order", [])
 
-        if len(page_order) != len(pages):
+        if len(new_page_order) != len(current_order) or set(new_page_order) != set(current_order):
             raise UploadException("Invalid page order.")
 
-        #
-        # Phase 1 - Rename to temporary names
-        #
-        for new_index, old_page in enumerate(page_order, start=1):
-
-            page = next(
-                p for p in pages
-                if p["page_number"] == old_page
-            )
-
-            old_path = self.session_path / page["stored_name"]
-
-            suffix = old_path.suffix
-
-            temp_path = self.session_path / f"temp_{new_index}{suffix}"
-
-            old_path.rename(temp_path)
-
-        #
-        # Phase 2 - Rename to final names
-        #
-        temp_files = sorted(
-            self.session_path.glob("temp_*")
-        )
-
-        for index, file in enumerate(temp_files, start=1):
-
-            new_name = f"page_{index}{file.suffix}"
-
-            file.rename(
-                self.session_path / new_name
-            )
-
+        metadata["page_order"] = new_page_order
+        self.write_metadata(metadata)
 
     def get_output_path(self) -> Path:
 

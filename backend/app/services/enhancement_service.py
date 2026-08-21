@@ -11,9 +11,15 @@ class EnhancementService:
         manager.update_status("enhanced")
         
 
+        metadata = manager.read_metadata()
+
+        pages = manager.list_pages()
 
         return {
             "session_id": session_id,
-            "status": "enhanced",
-            "enhanced_pages": total,
+            "status": metadata["status"],
+            "document_type": metadata["document_type"],
+            "original_file": metadata["original_file"],
+            "total_pages": metadata["total_pages"],
+            "pages": pages,
         }

@@ -37,6 +37,8 @@ class UploadService:
         ensure_directory(session_folder)
 
         uploaded_pages = []
+        page_order = []
+        pages_dict = {}
 
         for index, file in enumerate(files, start=1):
 
@@ -54,7 +56,8 @@ class UploadService:
                     f"{file.filename} exceeds {MAX_FILE_SIZE_MB} MB."
                 )
 
-            stored_name = f"page_{index}{extension}"
+            page_id = f"p_{uuid4().hex[:8]}"
+            stored_name = f"{page_id}{extension}"
 
             destination = session_folder / stored_name
 
@@ -62,20 +65,29 @@ class UploadService:
 
             uploaded_pages.append(
                 UploadedPage(
-                    id=f"page_{index}",
+                    id=page_id,
+                    page_id=page_id,
                     original_name=file.filename,
                     stored_name=stored_name,
                     page_number=index,
-                    preview_url=f"/temp/uploads/{session_id}/{stored_name}",
+                    preview_url=f"/temp/uploads/{session_id}/{stored_name}?v=1",
                 )
             )
 
-        manager = SessionManager(session_id)
+            page_order.append(page_id)
+            pages_dict[page_id] = {
+                "page_id": page_id,
+                "stored_name": stored_name,
+                "original_name": file.filename,
+                "version": 1
+            }
 
         manager.create_metadata(
             original_file=files[0].filename if len(files) == 1 else "Multiple Images",
             document_type="images",
             total_pages=len(uploaded_pages),
+            page_order=page_order,
+            pages_dict=pages_dict,
         )
         
         return {
@@ -105,27 +117,40 @@ class UploadService:
 
         pdf_path.write_bytes(contents)
 
-        pages = pdf_to_images(pdf_path, session_folder)
+        page_items = pdf_to_images(pdf_path, session_folder)
 
-        if len(pages) > MAX_PAGE_LIMIT:
+        if len(page_items) > MAX_PAGE_LIMIT:
             pdf_path.unlink(missing_ok=True)
             raise UploadException(
                 f"PDF contains more than {MAX_PAGE_LIMIT} pages."
             )
 
         uploaded_pages = []
+        page_order = []
+        pages_dict = {}
 
-        for index, page in enumerate(pages, start=1):
+        for index, (page_id, page_file_path) in enumerate(page_items, start=1):
+            stored_name = page_file_path.name
+            original_name = f"{pdf.filename} (Page {index})"
 
             uploaded_pages.append(
                 UploadedPage(
-                    id=f"page_{index}",
-                    original_name=f"{pdf.filename} (Page {index})",
-                    stored_name=page.name,
+                    id=page_id,
+                    page_id=page_id,
+                    original_name=original_name,
+                    stored_name=stored_name,
                     page_number=index,
-                    preview_url=f"/temp/uploads/{session_id}/{page.name}",
+                    preview_url=f"/temp/uploads/{session_id}/{stored_name}?v=1",
                 )
             )
+
+            page_order.append(page_id)
+            pages_dict[page_id] = {
+                "page_id": page_id,
+                "stored_name": stored_name,
+                "original_name": original_name,
+                "version": 1
+            }
 
         pdf_path.unlink(missing_ok=True)
 
@@ -135,6 +160,8 @@ class UploadService:
             original_file=pdf.filename,
             document_type="pdf",
             total_pages=len(uploaded_pages),
+            page_order=page_order,
+            pages_dict=pages_dict,
         )
 
         manager.update_status("uploaded")

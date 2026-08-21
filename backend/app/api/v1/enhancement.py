@@ -19,5 +19,8 @@ def enhance_session(session_id: str):
     return EnhancementResponse(
         session_id=result["session_id"],
         status=result["status"],
-        enhanced_pages=result["enhanced_pages"],
+        document_type=result["document_type"],
+        original_file=result["original_file"],
+        total_pages=result["total_pages"],
+        pages=result["pages"],
     )

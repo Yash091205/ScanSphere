@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.schemas.ocr import OCRResponse
+from app.schemas.ocr import OCRRequest, OCRResponse
 from app.services.ocr_service import OCRService
 
 router = APIRouter()
@@ -12,9 +12,15 @@ service = OCRService()
     "/session/{session_id}/ocr",
     response_model=OCRResponse,
 )
-def process_ocr(session_id: str):
+def process_ocr(
+    session_id: str,
+    request: OCRRequest,
+):
 
-    result = service.process_session(session_id)
+    result = service.process_session(
+        session_id,
+        request.pages,
+    )
 
     return OCRResponse(
         session_id=result["session_id"],
